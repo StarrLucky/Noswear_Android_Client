@@ -25,7 +25,7 @@ control LED 3 and Button 1:
 ## Requirements
 
 * This application depends on [Android BLE Library](https://github.com/NordicSemiconductor/Android-BLE-Library/) version 2.
-* Android http server library [Nanohttpd](https://github.com/NanoHttpd/nanohttpd).
+* Android http-server library [Nanohttpd](https://github.com/NanoHttpd/nanohttpd).
 
 
 ## Note
