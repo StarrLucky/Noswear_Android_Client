@@ -5,6 +5,8 @@ In the future this APP could be also appears as a voice recognition server.
 
 ## NRF51 BLE:
 
+
+
 Service UUID: `00001523-1212-EFDE-1523-785FEABCD123`
 
 A simplified proprietary service by Nordic Semiconductor, containing two characteristics one to 
