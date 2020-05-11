@@ -1,8 +1,9 @@
 # Noswear Android client
 
-As part of Noswear project this Android client handles command over Wi-Fi from Noswear Java server and sending it to NRF51 board
+As part of Noswear project this Android client handles command over Wi-Fi from Noswear Java server and sending it to NRF51 board.
  
 In the future this APP could be also appears as a voice recognition server.
+
 
 ## NRF51 BLE:
 
@@ -24,8 +25,7 @@ control LED 3 and Button 1:
 ## Requirements
 
 * This application depends on [Android BLE Library](https://github.com/NordicSemiconductor/Android-BLE-Library/) version 2.
-* Android 4.3 or newer is required.
-* nRF5 DK is required in order to test the BLE Blinky service.
+* Android http server library [Nanohttpd](https://github.com/NanoHttpd/nanohttpd).
 
 
 ## Note
