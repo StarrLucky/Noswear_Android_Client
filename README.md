@@ -2,7 +2,7 @@
 
 As part of Noswear project this Android client handles command over Wi-Fi from Noswear Java server and sending it to NRF51 board.
  
-In the future this APP could be also appears as a voice recognition server.
+In the future this APP could be also appears as a standalone voice recognition server.
 
 ## This app handles requests from Wi-Fi:
 request with param *shocking=on*, like
