@@ -1,6 +1,6 @@
 # Noswear Android client
 
-As part of Noswear project this Android client app:
+As part of Noswear project this Android client application
 *  handles command over Wi-Fi from Noswear voice recognition server
  * sending it to NRF51 board
  
