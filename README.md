@@ -4,7 +4,13 @@ As part of Noswear project this Android client handles command over Wi-Fi from N
  
 In the future this APP could be also appears as a voice recognition server.
 
+## This app handles requests from Wi-Fi
+request with param ?shocking=on
 
+> x.x.x.x/?shocking=on
+
+ will trigger sending BLE command (LEDPIN high state, for example) into NRF51-board.
+ 
 ## NRF51 BLE:
 
 Service UUID: `00001523-1212-EFDE-1523-785FEABCD123`
