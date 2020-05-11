@@ -1,7 +1,8 @@
 # Noswear Android client
 
 As part of Noswear project this Android client handles command over Wi-Fi from Noswear Java server and sending it to NRF51 board
-  In the future this APP could be also appears as a voice recognition server.
+ 
+In the future this APP could be also appears as a voice recognition server.
 
 ## NRF51 BLE:
 
