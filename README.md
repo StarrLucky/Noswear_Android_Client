@@ -7,7 +7,7 @@ As part of Noswear project this Android client application
 In the future this APP could be also appears as a standalone voice recognition server.
 
 ## This app handles requests from Wi-Fi:
-request with param *shocking=on*, like
+request with param shocking=on, like
 
 > 192.168.x.x/?shocking=on
 
