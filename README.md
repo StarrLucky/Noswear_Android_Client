@@ -11,7 +11,7 @@ request with param shocking=on, like
 
 > 192.168.x.x/?shocking=on
 
- will trigger sending BLE command (*LEDPIN* high state, for example) into NRF51-board.
+ will trigger sending BLE command to NRF51-board to change SHOCKINGPIN state.
  
 ## NRF51 BLE:
 
@@ -20,15 +20,10 @@ Service UUID: `00001523-1212-EFDE-1523-785FEABCD123`
 A simplified proprietary service by Nordic Semiconductor, containing two characteristics one to 
 control LED 3 and Button 1:
 
-- First characteristic controls the LED state (On/Off).
+- First characteristic controls the shocking pin state
   - UUID: **`00001525-1212-EFDE-1523-785FEABCD123`**
-  - Value: **`1`** => LED On
-  - Value: **`0`** => LED Off
+  - Value: **`1`** => shocking pin on command
 
-- Second characteristic notifies central of the button state on change (Pressed/Released).
-  - UUID: **`00001524-1212-EFDE-1523-785FEABCD123`**
-  - Value: **`1`** => Button Pressed
-  - Value: **`0`** => Button Released
 
 ## Requirements
 
