@@ -185,8 +185,8 @@ public class BlinkyManager extends BleManager<BlinkyManagerCallbacks> {
 			return;
 
 		// No need to change?
-		if (mLedOn == on)
-			return;
+		//if (mLedOn == on)
+		//	return;
 
 		log(Log.VERBOSE, "Turning LED " + (on ? "ON" : "OFF") + "...");
 		writeCharacteristic(mLedCharacteristic, on ? BlinkyLED.turnOn() : BlinkyLED.turnOff())

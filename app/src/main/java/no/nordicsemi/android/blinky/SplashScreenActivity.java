@@ -27,6 +27,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import no.nordicsemi.android.blinky.http.AndroidWebServerService;
+
 public class SplashScreenActivity extends Activity {
 	private static final int DURATION = 1000;
 
@@ -34,6 +36,8 @@ public class SplashScreenActivity extends Activity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash_screen);
+		startService(new Intent(this, AndroidWebServerService.class));
+
 
 		new Handler().postDelayed(() -> {
 			final Intent intent = new Intent(this, ScannerActivity.class);

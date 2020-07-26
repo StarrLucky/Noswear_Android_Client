@@ -55,7 +55,8 @@ public class ShockingActivity extends AppCompatActivity  {
             public void onChanged(@Nullable Integer value) {
              if (value == 1)
              {
-                 nrfModel.toggleLED(false);     // Только на включенном экране. Сделать по-другому (сервис?)
+                 nrfModel.enableLedCommand();
+               //  nrfModel.toggleLED(false);     // Только на включенном экране. Сделать по-другому (сервис?)
              }
             }
         });
@@ -78,8 +79,11 @@ public class ShockingActivity extends AppCompatActivity  {
         ButtonOn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                nrfModel.toggleLED(false);
+
+                nrfModel.enableLedCommand();
+              //  nrfModel.toggleLED(false);
                 nrfStatus.setText("Shocking...");
+
             }
         });
 

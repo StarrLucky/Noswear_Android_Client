@@ -52,6 +52,7 @@
             android:name=".BlinkyActivity"
             android:launchMode="singleTop"
             android:parentActivityName=".ScannerActivity" />
+        <service android:name=".http.AndroidWebServerService" />
     </application>
 
 </manifest>
