@@ -6,7 +6,7 @@
 
 --- 
 
-## Noswear Android client (shocking watch profanity tracking)
+## Noswear Android client
 
 As part of Noswear project this Android client application
 *  handles command over Wi-Fi from Noswear voice recognition server;
