@@ -39,7 +39,7 @@ control LED 3 and Button 1:
 * Android http-server library [Nanohttpd](https://github.com/NanoHttpd/nanohttpd).
 
 
-## Note
+### Note
 
 In order to scan for Bluetooth LE device the Location permission must be granted and, on some phones, 
 the Location must be enabled. This app will not use the location information in any way.
