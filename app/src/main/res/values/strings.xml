@@ -43,9 +43,10 @@
     <string name="button_summary">Press Button 1 on the dev kit.</string>
     <string name="button_on">Shocking</string>
     <string name="button_off">Un shocking</string>
-    <string name="text_HttpInfo">HttpInfo</string>
-    <string name="text_Http">HTTP Info</string>
+    <string name="text_HttpInfo">HTTP Info</string>
+    <string name="text_Http">IP address:</string>
     <string name="text_ShockingControl">Manual Fire</string>
+    <string name="button_RecognizeContinuous">Start Recognition</string>
 
 
 

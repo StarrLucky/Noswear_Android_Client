@@ -9,8 +9,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="no.nordicsemi.android.LOG" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -25,6 +25,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <service
+            android:name=".ShockingService"
+            android:enabled="true"
+            android:exported="true" />
         <activity android:name=".ShockingActivity" />
         <activity
             android:name=".SplashScreenActivity"
@@ -52,7 +56,14 @@
             android:name=".BlinkyActivity"
             android:launchMode="singleTop"
             android:parentActivityName=".ScannerActivity" />
+
         <service android:name=".http.AndroidWebServerService" />
+
+
+
+        <meta-data android:name="com.rollbar.android.ACCESS_TOKEN"
+            android:value="82fc764f9ca441a1842bade91bea5221" />
     </application>
+
 
 </manifest>

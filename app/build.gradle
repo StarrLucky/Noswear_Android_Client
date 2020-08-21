@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 28
     buildToolsVersion '29.0.0'
 
     defaultConfig {
         applicationId "no.nordicsemi.android.nrfblinky"
-        minSdkVersion 18
-        targetSdkVersion 29
-        versionCode 12
+        minSdkVersion 23
+        targetSdkVersion 27
+        versionCode 1
         versionName "2.4.3"
         resConfigs "en"
 
@@ -58,6 +58,14 @@ dependencies {
     // implementation project(":ble")
     //NanoHTTP
     implementation 'org.nanohttpd:nanohttpd:2.2.0'
+    implementation 'com.microsoft.cognitiveservices.speech:client-sdk:1.13.0'
 
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+
+    // Microsoft Speech SDK
+
+    implementation 'com.rollbar:rollbar-java:1.+'
+    implementation 'com.rollbar:rollbar-android:1.+@aar'
 
 }

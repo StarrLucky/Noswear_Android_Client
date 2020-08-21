@@ -8,8 +8,10 @@ import androidx.annotation.Nullable;
 import java.io.IOException;
 
 import fi.iki.elonen.NanoHTTPD;
+import no.nordicsemi.android.blinky.viewmodels.BlinkyViewModel;
 
- public class AndroidWebServerService extends Service {
+public class AndroidWebServerService extends Service {
+     private final static String TAG = "WebService";
      private AndroidWebServer androidWebServer = AndroidWebServer.getInstance();
 
 
@@ -33,6 +35,7 @@ import fi.iki.elonen.NanoHTTPD;
          try {
              androidWebServer.start();
          } catch (IOException e) {
+             System.err.println( "Couldn't start server:\n");
              e.printStackTrace();
          }
          return super.onStartCommand(intent, flags, startId);

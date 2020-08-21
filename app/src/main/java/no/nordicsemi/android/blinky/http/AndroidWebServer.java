@@ -18,13 +18,23 @@ public class AndroidWebServer extends NanoHTTPD  {
 
     private MutableLiveData<Integer> liveLedCommand = new MutableLiveData<>();
 
+
     public LiveData<Integer> getLedCommand()   {
         return  liveLedCommand;
     }
 
+    private BlinkyViewModel nrfModel;
 
-    private AndroidWebServer(int port) { super(port); }
-    private AndroidWebServer(String hostname, int port) { super(hostname, port); }
+
+    public AndroidWebServer(int port)
+    {
+        super(port);
+    }
+    public AndroidWebServer(String hostname, int port)
+    {
+
+        super(hostname, port);
+    }
 
 
     @Override
@@ -37,7 +47,9 @@ public class AndroidWebServer extends NanoHTTPD  {
 
         if (parms.get("shocking").compareTo("on") == 0)  {              // x.x.x.x/?shocking=on
             msg += "<p> Shocking !</p>";
-            liveLedCommand.postValue(1);
+            //liveLedCommand.postValue(1);
+
+            nrfModel.enableLedCommand();
             return newFixedLengthResponse( msg + "</body></html>\n" );
         }
         else {
