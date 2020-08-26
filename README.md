@@ -9,10 +9,11 @@
 ## Noswear Android client
 
 As part of Noswear project this Android client application
-*  handles command over Wi-Fi from Noswear voice recognition server;
- * sending it to NRF51 board.
- 
-In the future this APP could be also appears as a standalone voice recognition server.
+* handles command over Wi-Fi from Noswear voice recognition server
+* sending it to NRF51 board.
+
+* Recognising speech from mobile phone microphone 
+* Sending shocking command to NRF51 board if profanity in speech is present
 
 ### This app handles requests from Wi-Fi:
 request with param shocking=on, like

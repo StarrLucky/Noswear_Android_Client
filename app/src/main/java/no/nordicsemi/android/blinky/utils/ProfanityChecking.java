@@ -14,30 +14,39 @@ import no.nordicsemi.android.blinky.R;
 
 public class ProfanityChecking {
     private static final String TAG = "ProfanityChecking";
-    private int badWordCounter;
-    private List<String> profanityDictionary = new ArrayList<>();
+    private static List<String> profanityDictionary = new ArrayList<>();
+    private static List<String> profanityFound = new ArrayList<>();
 
     public ProfanityChecking(Activity activity) throws FileNotFoundException
     {
        setProfanityDictionary(activity);
     }
 
-    public void setProfanityDictionary(Activity activity) throws FileNotFoundException {
+    public void clearProfanityFound()
+    {
+        profanityFound.clear();
+    }
+
+    public List<String> getProfanityFound()
+    {
+        return profanityFound;
+    }
+
+    private static void setProfanityDictionary(Activity activity) throws FileNotFoundException {
         String str;
         Resources res = activity.getResources();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(res.openRawResource(R.raw.profanity_dic)))) {    // opening RAW txt dictionary RESOURCE (RAW/profanity_dic.txt)
             while ((str = reader.readLine()) != null) {
                 profanityDictionary.add(str);
             }
-            reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+
     public int checkProfanity(String str) {
-        badWordCounter = 0;
-        str.toLowerCase();
+        int badWordCounter = 0;
         Log.i(TAG, "input string: "+ str + "str length:" + str.length());
         str = str.replaceAll("\\.", "");  // removing punctuation marks
         str = str.replaceAll("\\?", "");  // removing punctuation marks
@@ -48,11 +57,14 @@ public class ProfanityChecking {
             for (int i = 0; i < splitWords.length; i++) {
                if (profanityDictionary.contains(splitWords[i])) {
                     badWordCounter++;
+                    profanityFound.add(splitWords[i].toLowerCase());
+
                 }
             }
         } else if (splitWords.length == 1) {
             if (profanityDictionary.contains(splitWords[0].toLowerCase())) {
                 badWordCounter++;
+                profanityFound.add(splitWords[0].toLowerCase());
             }
        }
         return badWordCounter;

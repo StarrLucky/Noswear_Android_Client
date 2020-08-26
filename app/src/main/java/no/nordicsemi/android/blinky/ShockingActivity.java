@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,35 +16,23 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import no.nordicsemi.android.blinky.adapter.DiscoveredBluetoothDevice;
 import no.nordicsemi.android.blinky.http.AndroidWebServer;
-import no.nordicsemi.android.blinky.http.AndroidWebServerService;
 import no.nordicsemi.android.blinky.microsoft.speech.MicrophoneStream;
 import no.nordicsemi.android.blinky.viewmodels.BlinkyViewModel;
 import android.net.wifi.WifiManager;
 import no.nordicsemi.android.blinky.utils.ProfanityChecking;
 // from speech sdk
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+
 import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
-import com.microsoft.cognitiveservices.speech.ResultReason;
-import com.microsoft.cognitiveservices.speech.intent.LanguageUnderstandingModel;
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
-import com.microsoft.cognitiveservices.speech.intent.IntentRecognitionResult;
-import com.microsoft.cognitiveservices.speech.intent.IntentRecognizer;
-import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer;
-import com.microsoft.cognitiveservices.speech.CancellationDetails;
 import com.microsoft.cognitiveservices.speech.KeywordRecognitionModel;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -66,9 +53,10 @@ public class ShockingActivity extends AppCompatActivity  {
     private Button ButtonOff;
 
     private TextView recognizedTextView;
+    private TextView recognizedProfanityTextView;
     private Button recognizeContinuousButton;
 
-    private static final String SpeechSubscriptionKey = "yourkey";
+    private static final String SpeechSubscriptionKey = "4f80171def8d402fab6283354e1a2f37";
     private static final String SpeechRegion = "westeurope";
 
     private MicrophoneStream microphoneStream;
@@ -90,7 +78,6 @@ public class ShockingActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_shocking);
         final Intent intent = getIntent();
         final DiscoveredBluetoothDevice device = intent.getParcelableExtra(EXTRA_DEVICE);
-        final String deviceName = device.getName();
         final String deviceAddress = device.getAddress();
 
       //  Intent webserviceIntent = new Intent(this, AndroidWebServerService.class);
@@ -129,6 +116,8 @@ public class ShockingActivity extends AppCompatActivity  {
 
         recognizedTextView = findViewById(R.id.recognizedText);
         recognizeContinuousButton = findViewById(R.id.button_RecognizeContinuous);
+        recognizedProfanityTextView = findViewById(R.id.recognized_profatiny);
+
 
         try
         {
@@ -180,13 +169,12 @@ public class ShockingActivity extends AppCompatActivity  {
             private SpeechRecognizer reco = null;
             private AudioConfig audioInput = null;
             private String buttonText = "";
-            private ArrayList<String> content = new ArrayList<>();
-//            private ProfanityChecking profanityCheck;
+            private ArrayList<String> recognizedContent = new ArrayList<>();
+            private ArrayList<String> recognizedProfanity = new ArrayList<>();
             @Override
             public void onClick(final View view) {
                 final Button clickedButton = (Button) view;
                 disableButtons();
-
                 if (continuousListeningStarted) {
                     if (reco != null) {
                         final Future<Void> task = reco.stopContinuousRecognitionAsync();
@@ -203,33 +191,36 @@ public class ShockingActivity extends AppCompatActivity  {
                     }
                     return;
                 }
-                clearTextBox();
+                clearTextBoxes();
+
+
 
                 try {
-                    content.clear();
+                   recognizedContent.clear();
                     // audioInput = AudioConfig.fromDefaultMicrophoneInput();
                     audioInput = AudioConfig.fromStreamInput(createMicrophoneStream());
                     reco = new SpeechRecognizer(speechConfig, "ru-RU", audioInput);
-
                     reco.recognizing.addEventListener((o, speechRecognitionResultEventArgs) -> {
                         final String s = speechRecognitionResultEventArgs.getResult().getText();
                     });
-
                     reco.recognized.addEventListener((o, speechRecognitionResultEventArgs) -> {
                         final String s = speechRecognitionResultEventArgs.getResult().getText();
                         if (s.length() > 1) {
-                            if (finalProfanityChecking.checkProfanity(s)>0)
+                            if (finalProfanityChecking.checkProfanity(s)>0)                                 // checking for profanity language
                             {
-                                content.add("Found in:" + s );     // checking for profanity language
-                                nrfModel.enableLedCommand();
+                                recognizedContent.add(s);
+                                nrfModel.enableLedCommand();                                              // sending command to shocking circuit
                                 Log.i(TAG,"Shocking command " + s);
                             }
                             else
                                 {
-                                    content.add(s);
+                                    recognizedContent.add(s);
                                 }
                         }
-                        setRecognizedText(TextUtils.join(" ", content));
+                        setRecognizedText(TextUtils.join(" ", recognizedContent), recognizedTextView);
+                        setRecognizedText(TextUtils.join(" ", finalProfanityChecking.getProfanityFound()), recognizedProfanityTextView);   // returning list of words found in dictionary in recognized sentence
+                        finalProfanityChecking.clearProfanityFound();                               // clear that list
+
                     });
                     final Future<Void> task = reco.startContinuousRecognitionAsync();
                     setOnTaskCompletedListener(task, result -> {
@@ -314,21 +305,26 @@ public class ShockingActivity extends AppCompatActivity  {
         s_executorService = Executors.newCachedThreadPool();
     }
 
-    private void clearTextBox() {
-        AppendTextLine("", true);
+    private void clearTextBox(TextView view) {
+        AppendTextLine("", true, view);
     }
 
-    private void setRecognizedText(final String s) {
-        AppendTextLine(s, true);
+    private void clearTextBoxes() {
+        clearTextBox(recognizedProfanityTextView);
+        clearTextBox(recognizedTextView);
     }
 
-    private void AppendTextLine(final String s, final Boolean erase) {
+    private void setRecognizedText(final String s, TextView view) {
+        AppendTextLine(s, true, view);
+    }
+
+    private void AppendTextLine(final String s, final Boolean erase, TextView view) {
         ShockingActivity.this.runOnUiThread(() -> {
             if (erase) {
-                recognizedTextView.setText(s);
+                view.setText(s);
             } else {
-                String txt = recognizedTextView.getText().toString();
-                recognizedTextView.setText(txt + System.lineSeparator() + s);
+                String txt = view.getText().toString();
+                view.setText(txt + System.lineSeparator() + s);
             }
         });
     }
