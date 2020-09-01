@@ -30,10 +30,10 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
+
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

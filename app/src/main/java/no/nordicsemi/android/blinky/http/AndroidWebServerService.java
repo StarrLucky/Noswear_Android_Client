@@ -2,6 +2,7 @@ package no.nordicsemi.android.blinky.http;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -34,8 +35,9 @@ public class AndroidWebServerService extends Service {
      public int onStartCommand(Intent intent, int flags, int startId) {
          try {
              androidWebServer.start();
+             Log.i(TAG, "Web server Started");
          } catch (IOException e) {
-             System.err.println( "Couldn't start server:\n");
+             Log.e(TAG, "Couldn't start web service service");
              e.printStackTrace();
          }
          return super.onStartCommand(intent, flags, startId);

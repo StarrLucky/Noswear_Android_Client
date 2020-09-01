@@ -1,8 +1,12 @@
 package no.nordicsemi.android.blinky.http;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.Map;
+import java.util.Objects;
+
 import fi.iki.elonen.NanoHTTPD;
 
 import no.nordicsemi.android.blinky.viewmodels.BlinkyViewModel;
@@ -26,11 +30,11 @@ public class AndroidWebServer extends NanoHTTPD  {
     private BlinkyViewModel nrfModel;
 
 
-    public AndroidWebServer(int port)
+    private AndroidWebServer(int port)
     {
         super(port);
     }
-    public AndroidWebServer(String hostname, int port)
+    private AndroidWebServer(String hostname, int port)
     {
 
         super(hostname, port);
@@ -45,11 +49,12 @@ public class AndroidWebServer extends NanoHTTPD  {
         String quer = session.getQueryParameterString();
        // if (quer.compareTo("shocking") > 0) {
 
-        if (parms.get("shocking").compareTo("on") == 0)  {              // x.x.x.x/?shocking=on
-            msg += "<p> Shocking !</p>";
-            //liveLedCommand.postValue(1);
+        if (Objects.requireNonNull(parms.get("shocking")).compareTo("on") == 0)  {              // x.x.x.x/?shocking=on
 
-            nrfModel.enableLedCommand();
+            msg += "<p> Shocking! </p>";
+            liveLedCommand.postValue(1);  // post value to livedata to read from activity thread
+            //nrfModel.enableLedCommand();
+            Log.i("AndroidWebServer", "We got command");
             return newFixedLengthResponse( msg + "</body></html>\n" );
         }
         else {
