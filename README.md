@@ -44,3 +44,9 @@ control LED 3 and Button 1:
 
 In order to scan for Bluetooth LE device the Location permission must be granted and, on some phones, 
 the Location must be enabled. This app will not use the location information in any way.
+
+----
+
+  ![Noswear shocking watch pcb](https://github.com/StarrLucky/Noswear_Shocking_Board/blob/master/pcb.jpg)
+
+----
