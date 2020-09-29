@@ -24,7 +24,7 @@ request with param shocking=on, like
  
 ### Requirements
 
-* This application depends on [Android BLE Library](https://github.com/NordicSemiconductor/Android-BLE-Library/) version 2.
+* This application depends on [Android BLE Library](https://github.com/NordicSemiconductor/Android-BLE-Library/) version 2,
 * Android http-server library [Nanohttpd](https://github.com/NanoHttpd/nanohttpd).
 
 ----
