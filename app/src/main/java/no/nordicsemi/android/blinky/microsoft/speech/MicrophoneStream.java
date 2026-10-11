@@ -23,7 +23,7 @@ import android.media.AudioFormat;
 public class MicrophoneStream extends PullAudioInputStreamCallback {
     private final static int SAMPLE_RATE = 16000;
     private final AudioStreamFormat format;
-    private AudioRecord recorder;
+    private volatile AudioRecord recorder;
 
     public MicrophoneStream() {
         this.format = AudioStreamFormat.getWaveFormatPCM(SAMPLE_RATE, (short)16, (short)1);
@@ -36,14 +36,30 @@ public class MicrophoneStream extends PullAudioInputStreamCallback {
 
     @Override
     public int read(byte[] bytes) {
-        long ret = this.recorder.read(bytes, 0, bytes.length);
+        final AudioRecord recorder = this.recorder;
+        if (recorder == null) {
+            // The stream was closed while the SDK was still draining it.
+            return 0;
+        }
+        long ret = recorder.read(bytes, 0, bytes.length);
         return (int)ret;
     }
 
     @Override
     public void close() {
-        this.recorder.release();
+        // The SDK closes the stream when the AudioConfig is disposed and the activity closes it
+        // again when it releases the recognizer, so this has to tolerate being called twice.
+        final AudioRecord recorder = this.recorder;
+        if (recorder == null) {
+            return;
+        }
         this.recorder = null;
+        try {
+            recorder.stop();
+        } catch (IllegalStateException ex) {
+            Log.w("MicrophoneStream", "could not stop the recorder, " + ex.toString());
+        }
+        recorder.release();
     }
 
     private void initMic() {
