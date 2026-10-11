@@ -53,6 +53,9 @@ public class ShockingActivity extends AppCompatActivity {
     private static final String SpeechSubscriptionKey = "a274c21d23a248b98717bfceb4e27eac";
     private static final String SpeechRegion = "northeurope";
     private MicrophoneStream microphoneStream;
+    private SpeechRecognizer reco;
+    private AudioConfig audioInput;
+    private boolean continuousListeningStarted = false;
     private MicrophoneStream createMicrophoneStream() {
         if (microphoneStream != null) {
             microphoneStream.close();
@@ -131,9 +134,6 @@ public class ShockingActivity extends AppCompatActivity {
         ProfanityChecking finalProfanityChecking = profanityChecking;
         recognizeContinuousButton.setOnClickListener(new View.OnClickListener() {
             private static final String logTag = "reco 3";
-            private boolean continuousListeningStarted = false;
-            private SpeechRecognizer reco = null;
-            private AudioConfig audioInput = null;
             private String buttonText = "";
 
             @Override
@@ -164,17 +164,24 @@ public class ShockingActivity extends AppCompatActivity {
                     reco.recognized.addEventListener((o, speechRecognitionResultEventArgs) -> {
                         final String s = speechRecognitionResultEventArgs.getResult().getText();
                         if (s.length() > 0) {
-                            if (finalProfanityChecking.checkProfanity(s) > 0)                       // checking for profanity language
-                            {
+                            final boolean profanityFound = finalProfanityChecking.checkProfanity(s) > 0;   // checking for profanity language
+                            // Read the words out here: the list is cleared below, before the
+                            // runnable posted to the UI thread gets a chance to run.
+                            final String profanity = profanityFound
+                                    ? TextUtils.join(" ", finalProfanityChecking.getProfanityFound()).toUpperCase()
+                                    : "";
+                            // This event is raised on an SDK thread, so the views and the view
+                            // model below can only be touched from inside runOnUiThread.
+                            ShockingActivity.this.runOnUiThread(() -> {
                                 addText(s, recognizedTextView);
-                                setText(TextUtils.join(" ", finalProfanityChecking.getProfanityFound()).toUpperCase(), recognizedProfanityTextView);
-                                Log.i(TAG, "Shocking command " + s);
-                                nrfModel.enableLedCommand(); // ending command to shocking circuit
-
-                            } else {
-                                addText(s, recognizedTextView);
-                                clearText(recognizedProfanityTextView);
-                            }
+                                if (profanityFound) {
+                                    setText(profanity, recognizedProfanityTextView);
+                                    Log.i(TAG, "Shocking command " + s);
+                                    nrfModel.enableLedCommand(); // sending command to shocking circuit
+                                } else {
+                                    clearText(recognizedProfanityTextView);
+                                }
+                            });
                         }
                         finalProfanityChecking.clearProfanityFound();                               // clear list of words found in dictionary in recognized sentence
                     });
@@ -198,8 +205,48 @@ public class ShockingActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        releaseSpeechResources();
         super.onDestroy();
        // androidWebServer.stop();
+    }
+
+    /**
+     * Stops continuous recognition and releases the recognizer, the audio config and the
+     * microphone. Without this the SDK keeps the microphone open after a rotation or a back
+     * press and keeps raising events into a destroyed activity.
+     */
+    private void releaseSpeechResources() {
+        final SpeechRecognizer recoToClose = reco;
+        final AudioConfig audioInputToClose = audioInput;
+        final MicrophoneStream streamToClose = microphoneStream;
+        final boolean wasListening = continuousListeningStarted;
+        reco = null;
+        audioInput = null;
+        microphoneStream = null;
+        continuousListeningStarted = false;
+        if (recoToClose == null && audioInputToClose == null && streamToClose == null) {
+            return;
+        }
+        // Stopping and closing waits for the SDK to drain its audio pump, so keep it off the UI thread.
+        s_executorService.submit(() -> {
+            try {
+                if (recoToClose != null) {
+                    if (wasListening) {
+                        recoToClose.stopContinuousRecognitionAsync().get();
+                    }
+                    recoToClose.close();
+                }
+                if (audioInputToClose != null) {
+                    audioInputToClose.close();
+                }
+                if (streamToClose != null) {
+                    streamToClose.close();
+                }
+            } catch (Exception ex) {
+                Log.e(TAG, "could not release the speech recognizer, " + ex.toString());
+            }
+            return null;
+        });
     }
 
     private String getIpAccess() {
